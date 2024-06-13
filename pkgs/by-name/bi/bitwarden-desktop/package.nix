@@ -3,7 +3,7 @@
 , cargo
 , copyDesktopItems
 , dbus
-, electron_29
+, electron
 , fetchFromGitHub
 , glib
 , gnome
@@ -26,7 +26,7 @@
 let
   description = "Secure and free password manager for all of your devices";
   icon = "bitwarden";
-  electron = electron_29;
+  electron = electron;
 in buildNpmPackage rec {
   pname = "bitwarden-desktop";
   version = "2024.6.0";
