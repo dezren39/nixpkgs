@@ -7,6 +7,7 @@
 , fetchFromSourcehut
 , fetchpatch
 , fetchurl
+, neovimUtils
 , substituteAll
 , # Language dependencies
   fetchYarnDeps
@@ -60,6 +61,9 @@
 , zsh
 , # codeium-nvim dependencies
   codeium
+, # codesnap-nvim dependencies
+  clang
+, libuv
 , # command-t dependencies
   getconf
 , ruby
@@ -400,6 +404,56 @@
     '';
   };
 
+  codesnap-nvim =
+    let
+      version = "1.3.1";
+      src = fetchFromGitHub {
+        owner = "mistricky";
+        repo = "codesnap.nvim";
+        rev = "refs/tags/v${version}";
+        hash = "sha256-nS/bAWsBQ1L4M9437Yp6FdmHoogzalKlLIAXnRZyMp0=";
+      };
+      codesnap-lib = rustPlatform.buildRustPackage {
+        pname = "codesnap-lib";
+        inherit version src;
+
+        sourceRoot = "${src.name}/generator";
+
+        cargoHash = "sha256-FTQl5WIGEf+RQKYJ4BbIE3cCeN+NYUp7VXIrpxB05tU=";
+
+        nativeBuildInputs = [
+          pkg-config
+          rustPlatform.bindgenHook
+        ];
+
+        buildInputs = [
+          libuv.dev
+        ] ++ lib.optionals stdenv.isDarwin [
+          darwin.apple_sdk.frameworks.AppKit
+        ];
+      };
+    in
+    buildVimPlugin {
+      pname = "codesnap.nvim";
+      inherit version src;
+
+      # - Remove the shipped pre-built binaries
+      # - Copy the resulting binary from the codesnap-lib derivation
+      # Note: the destination should be generator.so, even on darwin
+      # https://github.com/mistricky/codesnap.nvim/blob/main/scripts/build_generator.sh
+      postInstall = let
+        extension = if stdenv.isDarwin then "dylib" else "so";
+      in ''
+        rm -r $out/lua/*.so
+        cp ${codesnap-lib}/lib/libgenerator.${extension} $out/lua/generator.so
+      '';
+
+      doInstallCheck = true;
+      nvimRequireCheck = "codesnap";
+
+      meta.homepage = "https://github.com/mistricky/codesnap.nvim/";
+    };
+
   command-t = super.command-t.overrideAttrs {
     nativeBuildInputs = [ getconf ruby ];
     buildPhase = ''
@@ -457,15 +511,17 @@
     dependencies = with self; [ copilot-lua plenary-nvim ];
   };
 
-  copilot-vim = super.copilot-vim.overrideAttrs {
+  copilot-vim = super.copilot-vim.overrideAttrs (old: {
     postInstall = ''
       substituteInPlace $out/autoload/copilot/client.vim \
         --replace "  let node = get(g:, 'copilot_node_command', ''\'''\')" \
                   "  let node = get(g:, 'copilot_node_command', '${nodejs}/bin/node')"
     '';
 
-    meta.license = lib.licenses.unfree;
-  };
+    meta = old.meta // {
+      license = lib.licenses.unfree;
+    };
+  });
 
   coq_nvim = super.coq_nvim.overrideAttrs {
     passthru.python3Dependencies = ps:
@@ -1048,6 +1104,13 @@
     nvimRequireCheck = "dapui";
   };
 
+  nvim-genghis = super.nvim-genghis.overrideAttrs {
+    dependencies = [ self.dressing-nvim ];
+
+    doInstallCheck = true;
+    nvimRequireCheck = "genghis";
+  };
+
   nvim-lsputils = super.nvim-lsputils.overrideAttrs {
     dependencies = with self; [ popfix ];
   };
@@ -1223,6 +1286,10 @@
       (nvim-treesitter.withPlugins (p: [ p.http p.json ]))
     ];
   };
+
+  rocks-nvim = neovimUtils.buildNeovimPlugin { luaAttr = "rocks-nvim"; };
+
+  rocks-config-nvim = neovimUtils.buildNeovimPlugin { luaAttr = "rocks-config-nvim"; };
 
   roslyn-nvim = super.roslyn-nvim.overrideAttrs {
     dependencies = with self; [ nvim-lspconfig ];
@@ -1474,6 +1541,11 @@
       substituteInPlace lua/telescope/_extensions/zoxide/config.lua \
         --replace "zoxide query -ls" "${zoxide}/bin/zoxide query -ls"
     '';
+  };
+
+  todo-comments-nvim = super.todo-comments-nvim.overrideAttrs {
+    dependencies = [ self.plenary-nvim ];
+    nvimRequireCheck = "todo-comments";
   };
 
   tup =

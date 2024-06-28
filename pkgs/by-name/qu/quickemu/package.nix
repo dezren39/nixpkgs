@@ -1,32 +1,34 @@
-{ lib
-, fetchFromGitHub
-, stdenv
-, makeWrapper
-, cdrtools
-, curl
-, gawk
-, gnugrep
-, gnused
-, jq
-, ncurses
-, pciutils
-, procps
-, python3
-, qemu
-, socat
-, spice-gtk
-, swtpm
-, usbutils
-, util-linux
-, unzip
-, xdg-user-dirs
-, xrandr
-, zsync
-, OVMF
-, OVMFFull
-, quickemu
-, testers
-, installShellFiles
+{
+  lib,
+  fetchFromGitHub,
+  stdenv,
+  makeWrapper,
+  cdrtools,
+  curl,
+  gawk,
+  gnugrep,
+  gnused,
+  jq,
+  ncurses,
+  pciutils,
+  procps,
+  python3,
+  qemu,
+  socat,
+  spice-gtk,
+  swtpm,
+  usbutils,
+  util-linux,
+  unzip,
+  xdg-user-dirs,
+  xrandr,
+  zsync,
+  OVMF,
+  OVMFFull,
+  quickemu,
+  testers,
+  installShellFiles,
+  fetchpatch2,
 }:
 let
   runtimePaths = [
@@ -52,15 +54,15 @@ let
   ];
 in
 
-stdenv.mkDerivation (finalAttrs : {
+stdenv.mkDerivation (finalAttrs: {
   pname = "quickemu";
-  version = "4.9.4";
+  version = "4.9.4-unstable-2024-05-28";
 
   src = fetchFromGitHub {
     owner = "quickemu-project";
     repo = "quickemu";
-    rev = finalAttrs.version;
-    hash = "sha256-fjbXgze6klvbRgkJtPIUh9kEkP/As7dAj+cazpzelBY=";
+    rev = "d78255b097b599e8ab3713cb61c4085cc45f5a95"; # TODO: return to version on next release
+    hash = "sha256-fF306CdGqKM+779OLm0NNyqPBtm7TuU7UN/NanT12y8=";
   };
 
   postPatch = ''
@@ -72,7 +74,10 @@ stdenv.mkDerivation (finalAttrs : {
       quickemu
   '';
 
-  nativeBuildInputs = [ makeWrapper installShellFiles ];
+  nativeBuildInputs = [
+    makeWrapper
+    installShellFiles
+  ];
 
   installPhase = ''
     runHook preInstall
@@ -91,13 +96,19 @@ stdenv.mkDerivation (finalAttrs : {
     runHook postInstall
   '';
 
-  passthru.tests = testers.testVersion { package = quickemu; };
+  passthru.tests = testers.testVersion {
+    version = "4.9.5"; # required for passing tests, TODO: remove when release bump
+    package = quickemu;
+  };
 
   meta = {
     description = "Quickly create and run optimised Windows, macOS and Linux virtual machines";
     homepage = "https://github.com/quickemu-project/quickemu";
     mainProgram = "quickemu";
     license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [ fedx-sudo flexiondotorg ];
+    maintainers = with lib.maintainers; [
+      fedx-sudo
+      flexiondotorg
+    ];
   };
 })
