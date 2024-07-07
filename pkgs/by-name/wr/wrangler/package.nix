@@ -102,7 +102,7 @@ in
   meta = {
     description = "Command-line interface for all things Cloudflare Workers";
     homepage = "https://github.com/cloudflare/workers-sdk#readme";
-    license = "MIT OR Apache-2.0";
+    license = with lib.licenses; [ mit apsl20 ];
     maintainers = with lib.maintainers; [ seanrmurphy dezren39 ];
     mainProgram = "wrangler";
   };
