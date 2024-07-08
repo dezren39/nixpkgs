@@ -97,7 +97,6 @@ in
     chmod a+x $out/bin/wrangler
     substituteInPlace $out/bin/wrangler --replace-warn WRANGLER_PATH $out
   '';
-  passthru.updateScript = ./update.sh;
 
   meta = {
     description = "Command-line interface for all things Cloudflare Workers";
