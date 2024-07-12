@@ -126,7 +126,31 @@ stdenv.mkDerivation {
     done
   '';
 
-  meta = meta // {
+  meta = with lib; {
+    description = "GNU documentation system";
+    homepage = "https://www.gnu.org/software/texinfo/";
+    changelog = "https://git.savannah.gnu.org/cgit/texinfo.git/plain/NEWS";
+    license = licenses.gpl3Plus;
+    platforms = platforms.all;
+    maintainers = with maintainers; [ oxij ];
+    # see comment above in patches section
+    broken = stdenv.hostPlatform.isPower64 && lib.strings.versionOlder version "6.0";
+
+    longDescription = ''
+      Texinfo is the official documentation format of the GNU project.
+      It was invented by Richard Stallman and Bob Chassell many years
+      ago, loosely based on Brian Reid's Scribe and other formatting
+      languages of the time.  It is used by many non-GNU projects as
+      well.
+
+      Texinfo uses a single source file to produce output in a number
+      of formats, both online and printed (dvi, html, info, pdf, xml,
+      etc.).  This means that instead of writing different documents
+      for online information and another for a printed manual, you
+      need write only one document.  And when the work is revised, you
+      need revise only that one document.  The Texinfo system is
+      well-integrated with GNU Emacs.
+    '';
     branch = version;
     # see comment above in patches section
     broken = stdenv.hostPlatform.isPower64 && versionOlder version "6.0";
