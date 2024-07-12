@@ -224,7 +224,6 @@ in
 
   config = {
     system.activationScripts.stdio = ""; # obsolete
-    system.activationScripts.var = ""; # obsolete
 
     systemd.tmpfiles.rules = [
       # Prevent the current configuration from being garbage-collected.
