@@ -133,8 +133,6 @@ stdenv.mkDerivation {
     license = licenses.gpl3Plus;
     platforms = platforms.all;
     maintainers = with maintainers; [ oxij ];
-    # see comment above in patches section
-    broken = stdenv.hostPlatform.isPower64 && lib.strings.versionOlder version "6.0";
 
     longDescription = ''
       Texinfo is the official documentation format of the GNU project.
