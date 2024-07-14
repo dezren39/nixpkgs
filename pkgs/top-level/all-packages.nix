@@ -12562,8 +12562,6 @@ with pkgs;
 
   sanctity = callPackage ../tools/misc/sanctity { };
 
-  sanjuuni = callPackage ../tools/graphics/sanjuuni { };
-
   sasquatch = callPackage ../tools/filesystems/sasquatch { };
 
   sasview = libsForQt5.callPackage ../applications/science/misc/sasview { };
@@ -32735,7 +32733,7 @@ with pkgs;
     inherit (darwin.apple_sdk.frameworks) CoreServices Foundation Security;
   };
   p4d = callPackage ../applications/version-management/p4d { };
-  p4v = callPackage ../applications/version-management/p4v { };
+  p4v = qt6Packages.callPackage ../applications/version-management/p4v { };
 
   parson = callPackage ../development/libraries/parson { };
 
