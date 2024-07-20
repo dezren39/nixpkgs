@@ -14,7 +14,7 @@
 # CI
 /.github/workflows @NixOS/Security @Mic92 @zowoq
 /.github/workflows/check-nix-format.yml @infinisil
-/ci @infinisil
+/ci @infinisil @NixOS/Security
 
 # Develompent support
 /.editorconfig @Mic92 @zowoq
@@ -371,7 +371,6 @@ nixos/tests/lxd/                        @adamcstephens
 pkgs/by-name/in/incus/                  @adamcstephens
 pkgs/by-name/lx/lxc*                    @adamcstephens
 pkgs/by-name/lx/lxd*                    @adamcstephens
-pkgs/os-specific/linux/lxc/             @adamcstephens
 
 # ExpidusOS, Flutter
 /pkgs/development/compilers/flutter @RossComputerGuy

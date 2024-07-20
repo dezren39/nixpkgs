@@ -406,8 +406,8 @@ let
         mktplcRef = {
           name = "vscode-neovim";
           publisher = "asvetliakov";
-          version = "1.17.2";
-          hash = "sha256-IA09vUleY7hazu65kadES4iq3XojyJ3sXOOGaw0vJnU=";
+          version = "1.18.4";
+          hash = "sha256-mTmfIEXObDWi82z+59JaCjUDqFd9nOO/6QDtlHGuVvk=";
         };
         meta = {
           changelog = "https://marketplace.visualstudio.com/items/asvetliakov.vscode-neovim/changelog";
@@ -1644,8 +1644,8 @@ let
         mktplcRef = {
           name = "elixir-ls";
           publisher = "JakeBecker";
-          version = "0.22.0";
-          hash = "sha256-pus5rOyVgheiblvWrkM3H/GZifBzUGR++JiHN4aU/3I=";
+          version = "0.22.1";
+          hash = "sha256-zi+Rcy63AUqDnVZCbPuljs+aBHsyOTHgbiJ+h9dB9us=";
         };
         meta = {
           changelog = "https://marketplace.visualstudio.com/items/JakeBecker.elixir-ls/changelog";
@@ -1811,6 +1811,23 @@ let
           publisher = "file-icons";
           version = "1.0.29";
           sha256 = "05x45f9yaivsz8a1ahlv5m8gy2kkz71850dhdvwmgii0vljc8jc6";
+        };
+      };
+
+      fill-labs.dependi = buildVscodeMarketplaceExtension {
+        mktplcRef = {
+          name = "dependi";
+          publisher = "fill-labs";
+          version = "0.7.2";
+          hash = "sha256-S3R1oLk7facP5Rn9czmHlffhMtLNrSaGYbaU3/x6/aM=";
+        };
+        meta = {
+          changelog = "https://marketplace.visualstudio.com/items/fill-labs.dependi/changelog";
+          description = "VSCode extension for managing dependencies and address vulnerabilities in Rust, Go, JavaScript, and Python projects";
+          downloadPage = "https://marketplace.visualstudio.com/items?itemName=fill-labs.dependi";
+          homepage = "https://github.com/filllabs/dependi";
+          license = lib.licenses.unfree;
+          maintainers = [ lib.maintainers._21CSM ];
         };
       };
 
@@ -3665,8 +3682,8 @@ let
         mktplcRef = {
           name = "phind";
           publisher = "phind";
-          version = "0.22.2";
-          hash = "sha256-nN/7IVa4WaA5V39CHx0nrvWBmBNtISvAINTQzk02x1w=";
+          version = "0.25.3";
+          hash = "sha256-GPFeI7tVLfzlGyal2LbsyTgPkWY/nPWnXtS38S9pvxo=";
         };
         meta = {
           description = "Using Phind AI service to provide answers based on the code context";
@@ -4263,6 +4280,23 @@ let
         };
         meta = {
           license = lib.licenses.mit;
+        };
+      };
+
+      sswg.swift-lang = buildVscodeMarketplaceExtension {
+        mktplcRef = {
+          name = "swift-lang";
+          publisher = "sswg";
+          version = "1.10.4";
+          hash = "sha256-5NrWBuaNdDNF0ON0HUwdwPFsRO3Hfe0UW4AooJbjiA0=";
+        };
+        meta = {
+          changelog = "https://marketplace.visualstudio.com/items/sswg.swift-lang/changelog";
+          description = "Swift Language Support for Visual Studio Code";
+          downloadPage = "https://marketplace.visualstudio.com/items?itemName=sswg.swift-lang";
+          homepage = "https://github.com/swiftlang/vscode-swift";
+          license = lib.licenses.asl20;
+          maintainers = [ lib.maintainers.uncenter ];
         };
       };
 

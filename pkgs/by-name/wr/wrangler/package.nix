@@ -1,18 +1,20 @@
 {
   lib,
-  pkgs,
   stdenv,
   fetchFromGitHub,
-  pnpm_9,
+  makeWrapper,
   nodejs,
-  npmHooks,
-  writeScriptBin
+  pnpm_9,
+  autoPatchelfHook,
+  llvmPackages,
+  musl,
+  xorg,
 }:
 let
   srcHash = "sha256-/4iIkvSn85fkRggmIha2kRlW0MEwvzy0ZAmIb8+LpZQ=";
   pnpmDepsHash = "sha256-aTTaiGXm1WYwmy+ljUC9yO3qtvN20SA+24T83dWYrI0=";
 in
-  stdenv.mkDerivation (finalAttrs: {
+stdenv.mkDerivation (finalAttrs: {
   pname = "wrangler";
   version = "3.62.0";
 
@@ -20,30 +22,27 @@ in
     owner = "cloudflare";
     repo = "workers-sdk";
     rev = "wrangler@${finalAttrs.version}";
-    hash = "${srcHash}";
+    hash = "sha256-/4iIkvSn85fkRggmIha2kRlW0MEwvzy0ZAmIb8+LpZQ=";
   };
-
-  buildInputs = [
-    pkgs.llvmPackages.libcxx
-    pkgs.llvmPackages.libunwind
-    pkgs.musl
-    pkgs.xorg.libX11
-  ] ++ lib.optional stdenv.isLinux pkgs.autoPatchelfHook;
-
-  nativeBuildInputs = [
-    nodejs
-    pnpm_9.configHook
-    pkgs.autoPatchelfHook
-  ];
 
   pnpmDeps = pnpm_9.fetchDeps {
     inherit (finalAttrs) pname version src;
-    hash = "${pnpmDepsHash}";
+    hash = "sha256-aTTaiGXm1WYwmy+ljUC9yO3qtvN20SA+24T83dWYrI0=";
   };
 
-  preBuild = ''
-    addAutoPatchelfSearchPath lib/node_modules/.pnpm/@cloudflare+workerd-linux-64@1.20240620.1/node_modules/@cloudflare/workerd-linux-64/bin/
-    '';
+  buildInputs = [
+    llvmPackages.libcxx
+    llvmPackages.libunwind
+    musl
+    xorg.libX11
+  ];
+
+  nativeBuildInputs = [
+    autoPatchelfHook
+    makeWrapper
+    nodejs
+    pnpm_9.configHook
+  ];
 
   # @cloudflare/vitest-pool-workers wanted to run a server as part of the build process
   # so I simply removed it
@@ -51,29 +50,7 @@ in
     rm -fr packages/vitest-pool-workers
     NODE_ENV="production" pnpm --filter miniflare run build
     NODE_ENV="production" pnpm --filter wrangler run build
-    # pnpm --offline deploy --frozen-lockfile  --ignore-script  --filter=bash-language-server server-deploy
-    '';
-
-  # this was taken from a previous script which was generated somehow
-  wranglerScript = pkgs.writeText "wrangler" ''
-        #!${pkgs.bash}/bin/sh
-        basedir=$(dirname "$(echo "$0" | sed -e 's,\\,/,g')")
-
-        case `uname` in
-            *CYGWIN*) basedir=`cygpath -w "$basedir"`;;
-        esac
-
-        if [ -z "$NODE_PATH" ]; then
-            export NODE_PATH="WRANGLER_PATH/lib/node_modules:WRANGLER_PATH/lib/packages/wrangler/node_modules"
-        else
-            export NODE_PATH="WRANGLER_PATH/lib/node_modules:WRANGLER_PATH/lib/packages/wrangler/node_modules:$NODE_PATH"
-        fi
-        if [ -x "$basedir/node" ]; then
-            exec "$basedir/node" "WRANGLER_PATH/lib/packages/wrangler/bin/wrangler.js" "$@"
-        else
-            exec node "WRANGLER_PATH/lib/packages/wrangler/bin/wrangler.js" "$@"
-        fi
-      '';
+  '';
 
   # I'm sure this is suboptimal but it seems to work. Points:
   # - when build is run in the original repo, no specific executable seems to be generated; you run the resulting build with pnpm run start
@@ -84,26 +61,40 @@ in
   installPhase = ''
     runHook preInstall
     mkdir -p $out/bin $out/lib $out/lib/packages/wrangler
-    rm -rf node_modules/typescript node_modules/eslint node_modules/.bin/eslint node_modules/prettier node_modules/.bin/prettier
+    rm -rf node_modules/typescript node_modules/eslint node_modules/prettier node_modules/bin node_modules/.bin node_modules/**/bin node_modules/**/.bin
     cp -r node_modules $out/lib
-    cp -r packages/wrangler/bin $out/lib/packages/wrangler
-    cp -r packages/wrangler/wrangler-dist $out/lib/packages/wrangler
-    cp -r packages/wrangler/node_modules $out/lib/packages/wrangler
-    cp -r packages/wrangler/templates $out/lib/packages/wrangler
-    cp -r packages/wrangler/templates $out/lib/packages/wrangler
     cp -r packages/miniflare $out/lib/packages
     cp -r packages/workers-tsconfig $out/lib/packages
-    cp $wranglerScript $out/bin/wrangler
-    chmod a+x $out/bin/wrangler
-    substituteInPlace $out/bin/wrangler --replace-warn WRANGLER_PATH $out
+    cp -r packages/wrangler/node_modules $out/lib/packages/wrangler
+    cp -r packages/wrangler/templates $out/lib/packages/wrangler
+    cp -r packages/wrangler/wrangler-dist $out/lib/packages/wrangler
+    rm -rf $out/lib/**/bin $out/lib/**/.bin
+    cp -r packages/wrangler/bin $out/lib/packages/wrangler
+    NODE_PATH_ARRAY=( "$out/lib/node_modules" "$out/lib/packages/wrangler/node_modules" )
+    makeWrapper ${lib.getExe nodejs} $out/bin/wrangler \
+      --inherit-argv0 \
+      --prefix-each NODE_PATH : "$${NODE_PATH_ARRAY[@]}" \
+      --add-flags $out/lib/packages/wrangler/bin/wrangler.js
+    runHook postInstall
   '';
-  passthru.updateScript = ./update.sh;
 
+  passthru.updateScript = ./update.sh;
   meta = {
     description = "Command-line interface for all things Cloudflare Workers";
     homepage = "https://github.com/cloudflare/workers-sdk#readme";
-    license = "MIT OR Apache-2.0";
-    maintainers = with lib.maintainers; [ seanrmurphy dezren39 ];
+    license = with lib.licenses; [
+      mit
+      apsl20
+    ];
+    maintainers = with lib.maintainers; [
+      seanrmurphy
+      dezren39
+    ];
     mainProgram = "wrangler";
+    # cpp is required for building workerd.
+    # workerd is used for some wrangler subcommands.
+    # non-linux platforms may experience errors
+    # on certain subcommands due to this issue.
+    platforms = [ "x86_64-linux" ];
   };
 })

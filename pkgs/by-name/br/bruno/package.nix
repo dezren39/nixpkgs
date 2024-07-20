@@ -28,13 +28,13 @@ let
 in
 buildNpmPackage' rec {
   pname = "bruno";
-  version = "1.20.1";
+  version = "1.21.0";
 
   src = fetchFromGitHub {
     owner = "usebruno";
     repo = "bruno";
     rev = "v${version}";
-    hash = "sha256-WUGdXPG/v8vmgI3a/X+J1EQUlbJdNaNAUx5whezMcAs=";
+    hash = "sha256-k8pRSAQpE//qH7XRjSTXmxundgK5dmOQTRKP9D2RUdY=";
 
     postFetch = ''
       ${lib.getExe npm-lockfile-fix} $out/package-lock.json
@@ -71,6 +71,11 @@ buildNpmPackage' rec {
       categories = [ "Development" ];
       startupWMClass = "Bruno";
     })
+  ];
+
+  patches = [
+    # Workaround to fix css issue in bruno due to electron difference between Nix and mainstream. https://github.com/NixOS/nixpkgs/issues/324176
+    ./scroll-width-fix.patch
   ];
 
   postPatch = ''
@@ -153,7 +158,7 @@ buildNpmPackage' rec {
     homepage = "https://www.usebruno.com";
     inherit (electron.meta) platforms;
     license = licenses.mit;
-    maintainers = with maintainers; [ gepbird kashw2 lucasew mattpolzin water-sucks ];
+    maintainers = with maintainers; [ gepbird kashw2 lucasew mattpolzin water-sucks redyf ];
     mainProgram = "bruno";
   };
 }
