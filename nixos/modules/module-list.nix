@@ -217,6 +217,7 @@
   ./programs/java.nix
   ./programs/joycond-cemuhook.nix
   ./programs/k3b.nix
+  ./programs/kde-pim.nix
   ./programs/k40-whisperer.nix
   ./programs/kbdlight.nix
   ./programs/kclock.nix
@@ -732,6 +733,7 @@
   ./services/misc/etesync-dav.nix
   ./services/misc/evdevremapkeys.nix
   ./services/misc/felix.nix
+  ./services/misc/flaresolverr.nix
   ./services/misc/forgejo.nix
   ./services/misc/freeswitch.nix
   ./services/misc/fstrim.nix
@@ -1403,6 +1405,7 @@
   ./services/web-apps/honk.nix
   ./services/web-apps/icingaweb2/icingaweb2.nix
   ./services/web-apps/icingaweb2/module-monitoring.nix
+  ./services/web-apps/ifm.nix
   ./services/web-apps/invidious.nix
   ./services/web-apps/invoiceplane.nix
   ./services/web-apps/isso.nix
