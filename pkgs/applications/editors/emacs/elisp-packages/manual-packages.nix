@@ -17,7 +17,9 @@ in
 
   cask = callPackage ./manual-packages/cask { };
 
-  codeium = callPackage ./manual-packages/codeium { };
+  codeium = callPackage ./manual-packages/codeium {
+    inherit (pkgs) codeium;
+  };
 
   consult-gh = callPackage ./manual-packages/consult-gh { };
 
@@ -44,6 +46,8 @@ in
   grid = callPackage ./manual-packages/grid { };
 
   helm-words = callPackage ./manual-packages/helm-words { };
+
+  icicles = callPackage ./manual-packages/icicles { };
 
   idris2-mode = callPackage ./manual-packages/idris2-mode { };
 

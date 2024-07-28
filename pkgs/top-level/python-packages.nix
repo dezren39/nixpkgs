@@ -4161,10 +4161,12 @@ self: super: with self; {
 
   fairseq = callPackage ../development/python-modules/fairseq { };
 
-  faiss = toPythonModule (pkgs.faiss.override {
-    pythonSupport = true;
-    pythonPackages = self;
-  });
+  faiss = callPackage ../development/python-modules/faiss {
+    faiss-build = pkgs.faiss.override {
+      pythonSupport = true;
+      pythonPackages = self;
+    };
+  };
 
   fake-useragent = callPackage ../development/python-modules/fake-useragent { };
 
@@ -5331,6 +5333,8 @@ self: super: with self; {
     inherit (pkgs.buildPackages) meson;
   };
 
+  gstools = callPackage ../development/python-modules/gstools { };
+
   gtfs-realtime-bindings = callPackage ../development/python-modules/gtfs-realtime-bindings { };
 
   gto = callPackage ../development/python-modules/gto { };
@@ -5420,6 +5424,8 @@ self: super: with self; {
   halohome = callPackage ../development/python-modules/halohome { };
 
   handout = callPackage ../development/python-modules/handout { };
+
+  hankel = callPackage ../development/python-modules/hankel { };
 
   hap-python = callPackage ../development/python-modules/hap-python { };
 
@@ -9117,10 +9123,6 @@ self: super: with self; {
 
   nose-timer = callPackage ../development/python-modules/nose-timer { };
 
-  nose-pattern-exclude = callPackage ../development/python-modules/nose-pattern-exclude { };
-
-  nose-warnings-filters = callPackage ../development/python-modules/nose-warnings-filters { };
-
   nose-xunitmp = callPackage ../development/python-modules/nose-xunitmp { };
 
   notebook = callPackage ../development/python-modules/notebook { };
@@ -11268,6 +11270,8 @@ self: super: with self; {
 
   pyevilgenius = callPackage ../development/python-modules/pyevilgenius { };
 
+  pyevtk = callPackage ../development/python-modules/pyevtk { };
+
   pyexcel = callPackage ../development/python-modules/pyexcel { };
 
   pyexcel-io = callPackage ../development/python-modules/pyexcel-io { };
@@ -13352,8 +13356,6 @@ self: super: with self; {
   ratelim = callPackage ../development/python-modules/ratelim { };
 
   ratelimit = callPackage ../development/python-modules/ratelimit { };
-
-  rauth = callPackage ../development/python-modules/rauth { };
 
   raven = callPackage ../development/python-modules/raven { };
 
@@ -15542,8 +15544,6 @@ self: super: with self; {
 
   tinytuya = callPackage ../development/python-modules/tinytuya { };
 
-  tissue = callPackage ../development/python-modules/tissue { };
-
   titlecase = callPackage ../development/python-modules/titlecase { };
 
   tld = callPackage ../development/python-modules/tld { };
@@ -17265,8 +17265,6 @@ self: super: with self; {
 
   webob = callPackage ../development/python-modules/webob { };
 
-  weboob = callPackage ../development/python-modules/weboob { };
-
   webrtc-noise-gain = callPackage ../development/python-modules/webrtc-noise-gain { };
 
   webrtcvad = callPackage ../development/python-modules/webrtcvad { };
@@ -17330,6 +17328,8 @@ self: super: with self; {
   whois-api = callPackage ../development/python-modules/whois-api { };
 
   whoisdomain = callPackage ../development/python-modules/whoisdomain { };
+
+  whool = callPackage ../development/python-modules/whool { };
 
   whoosh = callPackage ../development/python-modules/whoosh { };
 
@@ -17647,6 +17647,8 @@ self: super: with self; {
   yt-dlp-light = toPythonModule (pkgs.yt-dlp-light.override {
     python3Packages = self;
   });
+
+  yt-dlp-dearrow = callPackage ../development/python-modules/yt-dlp-dearrow { };
 
   youtube-search = callPackage ../development/python-modules/youtube-search { };
 
