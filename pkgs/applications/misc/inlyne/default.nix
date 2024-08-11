@@ -18,7 +18,7 @@ rustPlatform.buildRustPackage rec {
   version = "0.4.2";
 
   src = fetchFromGitHub {
-    owner = "trimental";
+    owner = "Inlyne-Project";
     repo = pname;
     rev = "v${version}";
     hash = "sha256-Kae8WnahA/6k6QT5htYU2+diAFkmxVsbVaxRUlhf39o=";
@@ -65,8 +65,8 @@ rustPlatform.buildRustPackage rec {
 
   meta = with lib; {
     description = "GPU powered browserless markdown viewer";
-    homepage = "https://github.com/trimental/inlyne";
-    changelog = "https://github.com/trimental/inlyne/releases/tag/${src.rev}";
+    homepage = "https://github.com/Inlyne-Project/inlyne";
+    changelog = "https://github.com/Inlyne-Project/inlyne/releases/tag/${src.rev}";
     license = licenses.mit;
     maintainers = with maintainers; [ figsoda ];
     mainProgram = "inlyne";

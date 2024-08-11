@@ -1,24 +1,24 @@
 {
-  dbus-glib,
-  desktop-file-utils,
-  enchant2,
-  fetchFromGitHub,
-  gtk2,
-  isocodes,
   lib,
-  libcanberra-gtk2,
-  libnotify,
-  libproxy,
+  stdenv,
+  fetchFromGitHub,
+  pkg-config,
+  gtk2,
   lua,
-  makeWrapper,
+  perl,
+  python311Packages,
+  pciutils,
+  dbus-glib,
+  libcanberra-gtk2,
+  libproxy,
+  enchant2,
+  libnotify,
+  openssl,
+  isocodes,
+  desktop-file-utils,
   meson,
   ninja,
-  openssl,
-  pciutils,
-  perl,
-  pkg-config,
-  python3Packages,
-  stdenv,
+  makeWrapper,
 }:
 
 stdenv.mkDerivation rec {
@@ -31,6 +31,29 @@ stdenv.mkDerivation rec {
     rev = "v${version}";
     hash = "sha256-rgaXqXbBWlfSyz+CT0jRLyfGOR1cYYnRhEAu7AsaWus=";
   };
+
+  nativeBuildInputs = [
+    meson
+    ninja
+    pkg-config
+    makeWrapper
+  ];
+
+  buildInputs = [
+    gtk2
+    lua
+    perl
+    python311Packages.python
+    python311Packages.cffi
+    pciutils
+    dbus-glib
+    libcanberra-gtk2
+    libproxy
+    libnotify
+    openssl
+    desktop-file-utils
+    isocodes
+  ];
 
   #hexchat and hexchat-text loads enchant spell checking library at run time and so it needs to have route to the path
   postPatch = ''
@@ -50,30 +73,6 @@ stdenv.mkDerivation rec {
   mesonFlags = [
     "-Dwith-lua=lua"
     "-Dtext-frontend=true"
-  ];
-
-  nativeBuildInputs = [
-    makeWrapper
-    meson
-    ninja
-    pkg-config
-  ];
-
-  buildInputs = [
-    dbus-glib
-    desktop-file-utils
-    gtk2
-    isocodes
-    libcanberra-gtk2
-    libnotify
-    libproxy
-    lua
-    openssl
-    pciutils
-    perl
-    python3Packages.cffi
-    python3Packages.python
-    python3Packages.setuptools
   ];
 
   postInstall = ''

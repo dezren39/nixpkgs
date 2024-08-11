@@ -6,10 +6,15 @@
   nodejs,
   pnpm_9,
   autoPatchelfHook,
+  cacert,
   llvmPackages,
   musl,
   xorg,
 }:
+let
+  srcHash = "sha256-YY+wp9rmXDWeSvdMC6FQyuDf8XP3GhHeHuFe9q0uNng=";
+  pnpmDepsHash = "sha256-BjSpgkDYafnDb0SBdL3B6IYWT4EOqCAxdDm+Ev6QIgw=";
+in
 stdenv.mkDerivation (finalAttrs: {
   pname = "wrangler";
   version = "3.66.0";
@@ -18,12 +23,12 @@ stdenv.mkDerivation (finalAttrs: {
     owner = "cloudflare";
     repo = "workers-sdk";
     rev = "wrangler@${finalAttrs.version}";
-    hash = "sha256-YY+wp9rmXDWeSvdMC6FQyuDf8XP3GhHeHuFe9q0uNng=";
+    hash = srcHash;
   };
 
   pnpmDeps = pnpm_9.fetchDeps {
     inherit (finalAttrs) pname version src;
-    hash = "sha256-BjSpgkDYafnDb0SBdL3B6IYWT4EOqCAxdDm+Ev6QIgw=";
+    hash = pnpmDepsHash;
   };
 
   buildInputs = [
@@ -70,10 +75,12 @@ stdenv.mkDerivation (finalAttrs: {
     makeWrapper ${lib.getExe nodejs} $out/bin/wrangler \
       --inherit-argv0 \
       --prefix-each NODE_PATH : "$${NODE_PATH_ARRAY[@]}" \
-      --add-flags $out/lib/packages/wrangler/bin/wrangler.js
+      --add-flags $out/lib/packages/wrangler/bin/wrangler.js \
+      --set-default SSL_CERT_FILE "${cacert}/etc/ssl/certs/ca-bundle.crt" # https://github.com/cloudflare/workers-sdk/issues/3264
     runHook postInstall
   '';
 
+  passthru.updateScript = ./update.sh;
   meta = {
     description = "Command-line interface for all things Cloudflare Workers";
     homepage = "https://github.com/cloudflare/workers-sdk#readme";
