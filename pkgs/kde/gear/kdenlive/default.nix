@@ -36,6 +36,7 @@ mkKdeDerivation {
     mlt
     shared-mime-info
     libv4l
+    glaxnimate
   ];
 
   qtWrapperArgs = [
