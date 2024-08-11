@@ -36,7 +36,6 @@
 , enableSDL2 ? true
 , SDL2
 , gitUpdater
-, libarchive
 }:
 
 stdenv.mkDerivation rec {
@@ -47,11 +46,7 @@ stdenv.mkDerivation rec {
     owner = "mltframework";
     repo = "mlt";
     rev = "v${version}";
-    hash = "sha256-rs02V6+9jMF0S78rCCXcDn3gzghqnOtWEHMo/491JxA=";
-    # The submodule contains glaxnimate code, since MLT uses internally some functions defined in glaxnimate.
-    # Since glaxnimate is not available as a library upstream, we cannot remove for now this dependency on
-    # submodules until upstream exports glaxnimate as a library: https://gitlab.com/mattbas/glaxnimate/-/issues/545
-    fetchSubmodules = true;
+    hash = "sha256-nQ9uRip6i9+/MziU4gQq1ah712J6f94cFQWTDYRjzyE=";
   };
 
   nativeBuildInputs = [
@@ -112,7 +107,6 @@ stdenv.mkDerivation rec {
     "-DSWIG_PYTHON=ON"
   ] ++ lib.optionals (qt != null) [
     "-DMOD_QT${lib.versions.major qt.qtbase.version}=ON"
-    "-DMOD_GLAXNIMATE${if lib.versions.major qt.qtbase.version == "5" then "" else "_QT6"}=ON"
   ];
 
   preFixup = ''
