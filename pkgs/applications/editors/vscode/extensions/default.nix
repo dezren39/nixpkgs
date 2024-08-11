@@ -1047,26 +1047,26 @@ let
             sources = {
               "x86_64-linux" = {
                 arch = "linux-x64";
-                hash = "sha256-ZlbPRFQwvZNCp8K/rbHqVa3coXa2dT4nOrNChC9naC8=";
+                hash = "sha256-X6Oszc88F0ENABwX63uwxbJ4VPQOQzZbJA87znVg5d8=";
               };
               "x86_64-darwin" = {
                 arch = "darwin-x64";
-                hash = "sha256-hSRdvno8VZNi48rckaqWbAgDXT6RXEcPnkNOT8DV1wA=";
+                hash = "sha256-NH3kGmNZpKofNplw+FRJFvV3m36HRuIqGR3zt6X5x60=";
               };
               "aarch64-linux" = {
                 arch = "linux-arm64";
-                hash = "sha256-rimE7dKT6zajHo6E42z7IyfP35xBXThIwMHhZjaZwHk=";
+                hash = "sha256-hlFAMz17cl2/1CK7/dgrLktcPZYAcccIWIpkAVdwpkI=";
               };
               "aarch64-darwin" = {
                 arch = "darwin-arm64";
-                hash = "sha256-7TeUAZLiEnqi5i5nHLhtv5aMxIcw7iiABOAkwP1YYqM=";
+                hash = "sha256-oVkmdw0sHv5Y+ysT4zWW6qFDh/h4/TcgSAauh1KrE1c=";
               };
             };
           in
           {
             name = "continue";
             publisher = "Continue";
-            version = "0.8.40";
+            version = "0.8.44";
           }
           // sources.${stdenv.system};
         nativeBuildInputs = lib.optionals stdenv.isLinux [ autoPatchelfHook ];
@@ -1625,8 +1625,8 @@ let
         mktplcRef = {
           name = "elixir-ls";
           publisher = "JakeBecker";
-          version = "0.22.1";
-          hash = "sha256-zi+Rcy63AUqDnVZCbPuljs+aBHsyOTHgbiJ+h9dB9us=";
+          version = "0.23.0";
+          hash = "sha256-eqS/xYK7yh7MvPAl61o1ZJ9wH9amqngJupU+puDq9xs=";
         };
         meta = {
           changelog = "https://marketplace.visualstudio.com/items/JakeBecker.elixir-ls/changelog";
@@ -2020,8 +2020,8 @@ let
         mktplcRef = {
           publisher = "github";
           name = "copilot";
-          version = "1.200.920";
-          hash = "sha256-LMShW9GN/wsDBodVn33Ui4qW0619r13VO2rSTPVE9TQ=";
+          version = "1.219.1028"; # compatible with vscode ^1.92.0
+          hash = "sha256-5f1P/CV6+Rp2kS9oSz5Ko5jMUt/Q6pWa9a+3nPyin6k=";
         };
 
         meta = {
@@ -2037,8 +2037,8 @@ let
         mktplcRef = {
           publisher = "github";
           name = "copilot-chat";
-          version = "0.16.2024060502"; # compatible with vscode 1.90.0
-          hash = "sha256-SAydDc3JlJzfCtbJICy3rWx8psVPdRdPfOuzR9Dqtp8=";
+          version = "0.19.2024073102"; # compatible with vscode ^1.92.0
+          hash = "sha256-ekRBmJiAav1gITWlqBOuWtZMt1YZeseF+3fw326db/s=";
         };
         meta = {
           description = "GitHub Copilot Chat is a companion extension to GitHub Copilot that houses experimental chat features";
@@ -4439,8 +4439,8 @@ let
         mktplcRef = {
           name = "code-spell-checker";
           publisher = "streetsidesoftware";
-          version = "4.0.4";
-          hash = "sha256-WbEhTIuPqH77IuEDgjPUz9chHM/aYjMdpCI9Kf0KS2Q=";
+          version = "4.0.5";
+          hash = "sha256-vrM3a13S1LKQq2Bl/DN/vasVMyClBdYBOt8DiUbh61I=";
         };
         meta = {
           changelog = "https://marketplace.visualstudio.com/items/streetsidesoftware.code-spell-checker/changelog";
