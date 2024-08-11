@@ -36,7 +36,6 @@
 , enableSDL2 ? true
 , SDL2
 , gitUpdater
-, libarchive
 }:
 
 stdenv.mkDerivation rec {
