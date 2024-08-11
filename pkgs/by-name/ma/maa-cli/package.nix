@@ -63,12 +63,11 @@ rustPlatform.buildRustPackage rec {
           ]
         }"
 
-    ''
-    + lib.optionalString (stdenv.buildPlatform.canExecute stdenv.hostPlatform) ''
-      installShellCompletion --cmd maa \
-        --bash <($out/bin/maa complete bash) \
-        --fish <($out/bin/maa complete fish) \
-        --zsh <($out/bin/maa complete zsh)
+  '' + lib.optionalString (stdenv.buildPlatform.canExecute stdenv.hostPlatform) ''
+    installShellCompletion --cmd maa \
+      --bash <($out/bin/maa complete bash) \
+      --fish <($out/bin/maa complete fish) \
+      --zsh <($out/bin/maa complete zsh)
 
       mkdir -p manpage
       $out/bin/maa mangen --path manpage
