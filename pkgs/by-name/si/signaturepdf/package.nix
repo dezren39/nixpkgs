@@ -16,7 +16,7 @@ stdenv.mkDerivation rec {
 
   src = fetchFromGitHub {
     owner = "24eme";
-    repo = "${pname}";
+    repo = "signaturepdf";
     rev = "v${version}";
     hash = "sha256-WPcnG1iRT4l4S/CSZkj75lIiyzVLsrSyH3GUJa7Tedc=";
   };
@@ -31,7 +31,7 @@ stdenv.mkDerivation rec {
     mkdir -p $out/share/signaturepdf $out/bin
 
     cp --target-directory=$out/share/signaturepdf --recursive \
-      app.php config locale public templates vendor
+      app.php config locale public templates vendor lib
 
     makeWrapper ${lib.getExe php} $out/bin/signaturepdf \
       --inherit-argv0 \

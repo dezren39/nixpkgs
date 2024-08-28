@@ -12,12 +12,12 @@
   xorg,
 }:
 let
-  srcHash = "sha256-YY+wp9rmXDWeSvdMC6FQyuDf8XP3GhHeHuFe9q0uNng=";
-  pnpmDepsHash = "sha256-BjSpgkDYafnDb0SBdL3B6IYWT4EOqCAxdDm+Ev6QIgw=";
+  srcHash = "sha256-LidJr+sYXArsnHGjR0akFm557SIHP6gzErifYkZqsRk=";
+  pnpmDepsHash = "sha256-USMDUz+qId6aSoCNxmzPMi3YCiakZ9jyLjEhujhVD8I=";
 in
 stdenv.mkDerivation (finalAttrs: {
   pname = "wrangler";
-  version = "3.66.0";
+  version = "3.72.1";
 
   src = fetchFromGitHub {
     owner = "cloudflare";

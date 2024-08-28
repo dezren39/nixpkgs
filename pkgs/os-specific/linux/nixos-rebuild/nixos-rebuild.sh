@@ -181,10 +181,6 @@ while [ "$#" -gt 0 ]; do
     esac
 done
 
-if [[ -n "$SUDO_USER" ]]; then
-    useSudo=1
-fi
-
 # log the given argument to stderr if verbose mode is on
 logVerbose() {
     if [ -n "$verboseScript" ]; then
@@ -729,8 +725,7 @@ EOF
                     .nixosVersion, .kernelVersion, .configurationRevision,
                     (.specialisations | join(" "))
                 ] | @tsv' |
-                column --separator $'\t' --table --table-columns "Generation,Build-date,NixOS version,Kernel,Configuration Revision,Specialisation" |
-                ${PAGER:cat}
+                column --separator $'\t' --table --table-columns "Generation,Build-date,NixOS version,Kernel,Configuration Revision,Specialisation"
         else
             jq --slurp .
         fi

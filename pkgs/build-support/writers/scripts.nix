@@ -22,17 +22,17 @@ let
 in
 rec {
   /**
-    A generic function that returns a derivation which, when beeing built outputs the script in an executable format.
+    `makeScriptWriter` returns a derivation which creates an executable script.
 
     # Inputs
 
     config (AttrSet)
     : `interpreter` (String)
-      : the interpreter to use for the script
+      : the [interpreter](https://en.wikipedia.org/wiki/Shebang_(Unix)) to use for the script.
     : `check` (String)
-      : A command to check the script. I.e. some linting check.
+      : A command to check the script. For example, this could be a linting check.
     : `makeWrapperArgs` (Optional, [ String ], Default: [])
-      : Arguments forwarded to (`makeWrapper`)[#fun-makeWrapper]
+      : Arguments forwarded to (`makeWrapper`)[#fun-makeWrapper].
 
     `nameOrPath` (String)
     : The name of the script or the path to the script.
@@ -40,8 +40,8 @@ rec {
       When a `string` starting with "/" is passed, the script will be created at the specified path in $out.
       I.e. `"/bin/hello"` will create a script at `$out/bin/hello`.
 
-      Any other `string` is interpreted as filename.
-      It must be a simple unix filename starting with a letter, digit, dot, or underscore.
+      Any other `string` is interpreted as a filename.
+      It must be a [POSIX filename](https://en.wikipedia.org/wiki/Filename) starting with a letter, digit, dot, or underscore.
       Spaces or special characters are not allowed.
 
     `content` (String)
@@ -51,6 +51,7 @@ rec {
     This function is used as base implementation for other high-level writer functions.
 
     For example, `writeBash` can (roughly) be implemented as:
+
     ```nix
     writeBash = makeScriptWriter { interpreter = "${pkgs.bash}/bin/bash"; }
     ```
@@ -103,7 +104,8 @@ rec {
       name = last (builtins.split "/" nameOrPath);
       path = if nameIsPath then nameOrPath else "/bin/${name}";
       # The inner derivation which creates the executable under $out/bin (never at $out directly)
-      # This is required in order to support wrapping, as wrapped programs consist of at least two files: the executable and the wrapper.
+      # This is required in order to support wrapping, as wrapped programs consist of
+      # at least two files: the executable and the wrapper.
       inner =
         pkgs.runCommandLocal name
           (
@@ -178,11 +180,10 @@ rec {
       '';
 
   /**
-    This is a generic function that returns a derivation which, when built, compiles the given script into an executable format.
+    `makeBinWriter` returns a derivation which compiles the given script into an executable format.
 
     :::{.note}
-    This function is the base implementation for other compile language `writers`.
-    i.e. `writeHaskell`, `writeRust`.
+    This function is the base implementation for other compile language `writers`, such as `writeHaskell` and `writeRust`.
     :::
 
     # Inputs
@@ -192,7 +193,7 @@ rec {
       : The script that compiles the given content into an executable.
 
     : `strip` (Boolean, Default: true)
-      : Whether to strip the executable or not.
+      : Whether to [strip](https://nixos.org/manual/nixpkgs/stable/#ssec-fixup-phase) the executable or not.
 
     : `makeWrapperArgs` (Optional, [ String ], Default: [])
       : Arguments forwarded to (`makeWrapper`)[#fun-makeWrapper]
@@ -201,10 +202,10 @@ rec {
     : The name of the script or the path to the script.
 
       When a `string` starting with "/" is passed, the script will be created at the specified path in $out.
-      I.e. `"/bin/hello"` will create a script at `$out/bin/hello`.
+      For example, `"/bin/hello"` will create a script at `$out/bin/hello`.
 
-      Any other `string` is interpreted as filename.
-      It must be a simple unix filename starting with a letter, digit, dot, or underscore.
+      Any other `string` is interpreted as a filename.
+      It must be a [POSIX filename](https://en.wikipedia.org/wiki/Filename) starting with a letter, digit, dot, or underscore.
       Spaces or special characters are not allowed.
 
     # Examples
@@ -309,7 +310,7 @@ rec {
   #   writeBash "example"
   #     {
   #       makeWrapperArgs = [
-  #         "--prefix" "PATH" ":" "${pkgs.hello}/bin"
+  #         "--prefix" "PATH" ":" "${lib.makeBinPath [ pkgs.hello ]}"
   #       ];
   #     }
   #     ''
@@ -335,7 +336,7 @@ rec {
   #  writeBashBin "example"
   #    {
   #      makeWrapperArgs = [
-  #        "--prefix", "PATH", ":", "${pkgs.hello}/bin",
+  #        "--prefix" "PATH" ":" "${lib.makeBinPath [ pkgs.hello ]}"
   #      ];
   #    }
   #    ''
@@ -356,7 +357,7 @@ rec {
   #   writeDash "example"
   #     {
   #       makeWrapperArgs = [
-  #         "--prefix", "PATH", ":", "${pkgs.hello}/bin",
+  #         "--prefix" "PATH" ":" "${lib.makeBinPath [ pkgs.hello ]}"
   #       ];
   #     }
   #     ''
@@ -382,7 +383,7 @@ rec {
   #  writeDashBin "example"
   #    {
   #      makeWrapperArgs = [
-  #        "--prefix", "PATH", ":", "${pkgs.hello}/bin",
+  #        "--prefix" "PATH" ":" "${lib.makeBinPath [ pkgs.hello ]}"
   #      ];
   #    }
   #    ''
@@ -403,7 +404,7 @@ rec {
   #   writeFish "example"
   #     {
   #       makeWrapperArgs = [
-  #         "--prefix", "PATH", ":", "${pkgs.hello}/bin",
+  #         "--prefix" "PATH" ":" "${lib.makeBinPath [ pkgs.hello ]}"
   #       ];
   #     }
   #     ''
@@ -438,7 +439,7 @@ rec {
   #   writeFishBin "example"
   #     {
   #       makeWrapperArgs = [
-  #         "--prefix", "PATH", ":", "${pkgs.hello}/bin",
+  #         "--prefix" "PATH" ":" "${lib.makeBinPath [ pkgs.hello ]}"
   #       ];
   #     }
   #     ''
@@ -495,7 +496,7 @@ rec {
   #   writeNu "example"
   #     {
   #       makeWrapperArgs = [
-  #         "--prefix", "PATH", ":", "${pkgs.hello}/bin",
+  #         "--prefix" "PATH" ":" "${lib.makeBinPath [ pkgs.hello ]}"
   #       ];
   #     }
   #     ''
@@ -523,7 +524,7 @@ rec {
   #   writeNuBin "example"
   #     {
   #       makeWrapperArgs = [
-  #         "--prefix", "PATH", ":", "${pkgs.hello}/bin",
+  #         "--prefix" "PATH" ":" "${lib.makeBinPath [ pkgs.hello ]}"
   #       ];
   #     }
   #    ''
@@ -716,6 +717,7 @@ rec {
     {
       libraries ? [ ],
       flakeIgnore ? [ ],
+      doCheck ? true,
       ...
     }@args:
     let
@@ -727,6 +729,7 @@ rec {
       (builtins.removeAttrs args [
         "libraries"
         "flakeIgnore"
+        "doCheck"
       ])
       // {
         interpreter =
@@ -734,7 +737,7 @@ rec {
             if libraries == [ ] then python.interpreter else (python.withPackages (ps: libraries)).interpreter
           else
             python.interpreter;
-        check = optionalString python.isPy3k (
+        check = optionalString (python.isPy3k && doCheck) (
           writeDash "pythoncheck.sh" ''
             exec ${buildPythonPackages.flake8}/bin/flake8 --show-source ${ignoreAttribute} "$1"
           ''
@@ -766,7 +769,7 @@ rec {
   # writePython3 "test_python3" { libraries = [ pkgs.python3Packages.pyyaml ]; } ''
   #   import yaml
   #
-  #   y = yaml.load("""
+  #   y = yaml.safe_load("""
   #     - test: success
   #   """)
   #   print(y[0]['test'])
@@ -783,7 +786,7 @@ rec {
   # writePyPy3 "test_pypy3" { libraries = [ pkgs.pypy3Packages.pyyaml ]; } ''
   #   import yaml
   #
-  #   y = yaml.load("""
+  #   y = yaml.safe_load("""
   #     - test: success
   #   """)
   #   print(y[0]['test'])
