@@ -12,8 +12,10 @@ rustPlatform.buildRustPackage rec {
     sha256 = "sha256-xNadwz2agPbxvgUqrUf1+KsWTmeNh8hJIWcNwTzzM/M=";
   };
 
-  cargoHash = "sha256-4c72l3R9OyxvslKC4RrIu/Ka3grGxIUCY6iF/NHS5X8=";
-
+  cargoHash = "sha256-EYD1gQgkHemT/3VewdsU5kOGQKY3OjIHRiTSqSRNwtU=";
+  cargoPatches = [
+    ./update-Cargo.lock-time.patch
+  ];
   nativeBuildInputs = [ cmake pkg-config python3 ];
   buildInputs = [ openssl xorg.libxcb libgit2 ] ++ lib.optionals stdenv.isDarwin
     (with darwin.apple_sdk.frameworks; [ curl Security AppKit ]);
