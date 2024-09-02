@@ -188,6 +188,7 @@ in {
   ceph-multi-node = handleTestOn [ "aarch64-linux" "x86_64-linux" ] ./ceph-multi-node.nix {};
   ceph-single-node = handleTestOn [ "aarch64-linux" "x86_64-linux" ] ./ceph-single-node.nix {};
   ceph-single-node-bluestore = handleTestOn [ "aarch64-linux" "x86_64-linux" ] ./ceph-single-node-bluestore.nix {};
+  ceph-single-node-bluestore-dmcrypt = handleTestOn [ "aarch64-linux" "x86_64-linux" ] ./ceph-single-node-bluestore-dmcrypt.nix {};
   certmgr = handleTest ./certmgr.nix {};
   cfssl = handleTestOn ["aarch64-linux" "x86_64-linux"] ./cfssl.nix {};
   cgit = handleTest ./cgit.nix {};
@@ -1060,6 +1061,11 @@ in {
   uptime-kuma = handleTest ./uptime-kuma.nix {};
   urn-timer = handleTest ./urn-timer.nix {};
   usbguard = handleTest ./usbguard.nix {};
+  userborn = runTest ./userborn.nix;
+  userborn-mutable-users = runTest ./userborn-mutable-users.nix;
+  userborn-immutable-users = runTest ./userborn-immutable-users.nix;
+  userborn-mutable-etc = runTest ./userborn-mutable-etc.nix;
+  userborn-immutable-etc = runTest ./userborn-immutable-etc.nix;
   user-activation-scripts = handleTest ./user-activation-scripts.nix {};
   user-expiry = runTest ./user-expiry.nix;
   user-home-mode = handleTest ./user-home-mode.nix {};

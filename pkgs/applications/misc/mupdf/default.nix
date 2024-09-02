@@ -65,12 +65,13 @@ stdenv.mkDerivation rec {
 
   src = fetchurl {
     url = "https://mupdf.com/downloads/archive/${pname}-${version}-source.tar.gz";
-    sha256 = "sha256-pRjZvpds2yAG1FOC1/+xubjWS8P9PLc8picNdS+n9Eg=";
+    hash = "sha256-pRjZvpds2yAG1FOC1/+xubjWS8P9PLc8picNdS+n9Eg=";
   };
 
-  patches = [ ./0002-Add-Darwin-deps.patch
-              ./0003-Fix-cpp-build.patch
-            ];
+  patches = [
+    ./0002-Add-Darwin-deps.patch
+    ./0003-Fix-cpp-build.patch
+  ];
 
   postPatch = ''
     substituteInPlace Makerules --replace "(shell pkg-config" "(shell $PKG_CONFIG"
@@ -165,7 +166,7 @@ stdenv.mkDerivation rec {
     EOF
 
     moveToOutput "bin" "$bin"
-    cp ./build/shared-release/libmupdf.so* $out/lib
+    cp ./build/shared-release/libmupdf${stdenv.hostPlatform.extensions.sharedLibrary}* $out/lib
   '' + (lib.optionalString (stdenv.isDarwin) ''
     for exe in $bin/bin/*; do
       install_name_tool -change build/shared-release/libmupdf.dylib $out/lib/libmupdf.dylib "$exe"
