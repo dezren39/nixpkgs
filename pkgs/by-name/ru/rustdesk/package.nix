@@ -82,6 +82,8 @@ rustPlatform.buildRustPackage rec {
   };
 
   postPatch = ''
+    # Overwrite cargo.lock because the one in the upstream repo has duplicates entries.
+    # It should probably be removed in the next rustdesk update (if they fix their cargoLock)
     ln -fs ${./Cargo.lock} Cargo.lock
   '';
 

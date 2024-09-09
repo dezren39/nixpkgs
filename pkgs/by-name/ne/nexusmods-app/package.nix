@@ -7,9 +7,6 @@
   fetchFromGitHub,
   fontconfig,
   lib,
-  libICE,
-  libSM,
-  libX11,
   runCommand,
   pname ? "nexusmods-app",
 }:
@@ -24,6 +21,8 @@ buildDotnetModule (finalAttrs: {
     fetchSubmodules = true;
     hash = "sha256-FzQphMhiC1g+6qmk/R1v4rq2ldy35NcaWm0RR1UlwLA=";
   };
+
+  enableParallelBuilding = false;
 
   # If the whole solution is published, there seems to be a race condition where
   # it will sometimes publish the wrong version of a dependent assembly, for
@@ -59,13 +58,6 @@ buildDotnetModule (finalAttrs: {
   ];
 
   runtimeInputs = [ desktop-file-utils ];
-
-  runtimeDeps = [
-    fontconfig
-    libICE
-    libSM
-    libX11
-  ];
 
   executables = [ "NexusMods.App" ];
 
