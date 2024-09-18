@@ -323,7 +323,13 @@ in
   });
 
   lua-resty-jwt = prev.lua-resty-jwt.overrideAttrs(oa: {
-    meta = oa.meta // { broken = true; };
+    src = fetchFromGitHub {
+      owner = "cdbattags";
+      repo = "lua-resty-jwt";
+      rev = "v0.2.3";
+      hash = "sha256-5lnr0ka6ijfujiRjqwCPb6jzItXx45FIN8CvhR/KiB8=";
+      fetchSubmodules = true;
+    };
   });
 
   lua-zlib = prev.lua-zlib.overrideAttrs (oa: {
@@ -470,13 +476,6 @@ in
   #   meta.broken = true;
   # });
 
-  lua-resty-openidc =  prev.lua-resty-openidc.overrideAttrs (_: {
-    postConfigure = ''
-      substituteInPlace ''${rockspecFilename} \
-        --replace '"lua-resty-session >= 2.8, <= 3.10",' '"lua-resty-session >= 2.8",'
-    '';
-  });
-
   lua-yajl =  prev.lua-yajl.overrideAttrs (oa: {
     buildInputs = oa.buildInputs ++ [
       yajl
@@ -544,9 +543,19 @@ in
       '';
   });
 
+  lze  = prev.lze.overrideAttrs(oa: {
+    doCheck = lua.luaversion == "5.1";
+    nativeCheckInputs = [ final.nlua final.busted ];
+    checkPhase = ''
+      runHook preCheck
+      export HOME=$(mktemp -d)
+      busted --lua=nlua
+      runHook postCheck
+    '';
+  });
+
   neotest  = prev.neotest.overrideAttrs(oa: {
-    # A few tests fail for strange reasons on darwin
-    doCheck = !stdenv.isDarwin;
+    doCheck = true;
     nativeCheckInputs = oa.nativeCheckInputs ++ [
       final.nlua final.busted neovim-unwrapped
     ];
@@ -560,7 +569,7 @@ in
       export LUA_PATH="./lua/?.lua;./lua/?/init.lua;$LUA_PATH"
       nvim --headless -i NONE \
         --cmd "set rtp+=${vimPlugins.plenary-nvim}" \
-        -c "PlenaryBustedDirectory tests/ {}"
+        -c "PlenaryBustedDirectory tests/ {sequential = true}"
 
       runHook postCheck
       '';
@@ -767,7 +776,6 @@ in
   });
 
   sqlite = prev.sqlite.overrideAttrs (drv: {
-
     doCheck = true;
     nativeCheckInputs = [ final.plenary-nvim neovim-unwrapped ];
 
@@ -784,7 +792,7 @@ in
 
       nvim --headless -i NONE \
         -u test/minimal_init.vim --cmd "set rtp+=${vimPlugins.plenary-nvim}" \
-        -c "PlenaryBustedDirectory test/auto/ { minimal_init = './test/minimal_init.vim' }"
+        -c "PlenaryBustedDirectory test/auto/ { sequential = true, minimal_init = './test/minimal_init.vim' }"
     '';
 
   });

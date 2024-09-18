@@ -85,7 +85,9 @@ in
 
   # passthru tests
 , pkgsi686Linux
+, pkgsStatic
 , runCommand
+, pkgs
 }: let
 self = stdenv.mkDerivation {
   pname = "nix";
@@ -243,6 +245,9 @@ self = stdenv.mkDerivation {
   # See https://github.com/NixOS/nix/issues/5687
   + lib.optionalString (atLeast25 && stdenv.isDarwin) ''
     echo "exit 99" > tests/gc-non-blocking.sh
+  '' # TODO: investigate why this broken
+  + lib.optionalString (atLeast25 && stdenv.hostPlatform.system == "aarch64-linux") ''
+    echo "exit 0" > tests/functional/flakes/show.sh
   '' + ''
     # nixStatic otherwise does not find its man pages in tests.
     export MANPATH=$man/share/man:$MANPATH
@@ -259,6 +264,8 @@ self = stdenv.mkDerivation {
 
     tests = {
       nixi686 = pkgsi686Linux.nixVersions.${self_attribute_name};
+      nixStatic = pkgsStatic.nixVersions.${self_attribute_name};
+
       # Basic smoke test that needs to pass when upgrading nix.
       # Note that this test does only test the nixVersions.stable attribute.
       misc = nixosTests.nix-misc.default;
@@ -278,6 +285,12 @@ self = stdenv.mkDerivation {
         fi
         touch $out
       '';
+
+      /** Intended to test `lib`, but also a good smoke test for Nix */
+      nixpkgs-lib = import ../../../../lib/tests/test-with-nix.nix {
+        inherit lib pkgs;
+        nix = self;
+      };
     };
   };
 

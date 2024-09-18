@@ -10,6 +10,8 @@
 
   awtrix = callPackage ./awtrix {};
 
+  average = callPackage ./average {};
+
   better_thermostat = callPackage ./better_thermostat {};
 
   dwd = callPackage ./dwd { };
@@ -37,6 +39,8 @@
   localtuya = callPackage ./localtuya {};
 
   mass = callPackage ./mass { };
+
+  midea_ac = callPackage ./midea_ac { };
 
   midea_ac_lan = callPackage ./midea_ac_lan {};
 

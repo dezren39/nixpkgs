@@ -2,7 +2,7 @@
 , lib
 , nixosTests
 , nix-update-script
-, buildGoModule
+, buildGo123Module
 , fetchFromGitHub
 , installShellFiles
 , pkg-config
@@ -29,18 +29,18 @@ let
       signal = "netbird-signal";
     };
 in
-buildGoModule rec {
+buildGo123Module rec {
   pname = "netbird";
-  version = "0.28.9";
+  version = "0.29.3";
 
   src = fetchFromGitHub {
     owner = "netbirdio";
     repo = "netbird";
     rev = "v${version}";
-    hash = "sha256-SM288I+N645vzGmLO5hfDeFDqSJOe11+0VZVPneagHw=";
+    hash = "sha256-0KLx3kxXGriKZqyvcLRoz8y4y729ZQVuOKDkm8p2te4=";
   };
 
-  vendorHash = "sha256-UlxylKiszgB2XQ4bZI23/YY/RsFCE7OlHT3DBsRhvCk=";
+  vendorHash = "sha256-CD34U+Z8bUKN0Z4nxIVC+mYDp71Q8q1bmUypRDGgb3U=";
 
   nativeBuildInputs = [ installShellFiles ] ++ lib.optional ui pkg-config;
 
@@ -110,7 +110,7 @@ buildGoModule rec {
     changelog = "https://github.com/netbirdio/netbird/releases/tag/v${version}";
     description = "Connect your devices into a single secure private WireGuard®-based mesh network with SSO/MFA and simple access controls";
     license = licenses.bsd3;
-    maintainers = with maintainers; [ misuzu vrifox ];
+    maintainers = with maintainers; [ vrifox saturn745 ];
     mainProgram = "netbird";
   };
 }
